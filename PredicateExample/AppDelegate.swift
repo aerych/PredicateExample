@@ -1,17 +1,12 @@
-//
-//  AppDelegate.swift
-//  PredicateExample
-//
-//  Created by aerych on 7/25/22.
-//
-
 import UIKit
 import CoreData
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
+    static var shared: AppDelegate {
+        return UIApplication.shared.delegate as! AppDelegate
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -60,6 +55,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
         return container
     }()
+
+    lazy var inMemoryContainer: NSPersistentContainer = {
+
+        let container = NSPersistentContainer(name: "PredicateExample")
+        container.persistentStoreDescriptions[0].type = NSInMemoryStoreType
+        container.loadPersistentStores { description, error in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        }
+
+        return container
+    }()
+
+
+    var context: NSManagedObjectContext {
+        return persistentContainer.viewContext
+    }
 
     // MARK: - Core Data Saving support
 
